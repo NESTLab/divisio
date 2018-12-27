@@ -1,4 +1,4 @@
-#divisio 
+# divisio 
 
 ## Dominic Cupo
 DJCupo@wpi.edu
