@@ -1,1 +1,6 @@
 After the graph is made, make the path planning sections use a worker pool of goroutines
+
+To the builder:
+    Parse json file to get configurations
+    export random or built graphs to json file
+    Also, save seed values
