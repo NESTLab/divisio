@@ -7,7 +7,7 @@ import (
 
 func (g *Graph) AddNode(n *Node) {
 	g.lock.Lock()
-	g.nodes = append(g.nodes, n)
+	g.Nodes = append(g.Nodes, n)
 	g.lock.Unlock()
 }
 
@@ -16,24 +16,24 @@ func (g *Graph) AddNodeRand(seed *rand.Rand, name string) {
 	difficulty := seed.Intn(50) + 50
 	rate := seed.Intn(50) + 50
 	n := MakeNode(name, difficulty, rate)
-	g.nodes = append(g.nodes, n)
+	g.Nodes = append(g.Nodes, n)
 	g.lock.Unlock()
 }
 
 func (g *Graph) AddEdge(n1, n2 *Node, weight int) {
 	g.lock.Lock()
-	if g.edges == nil {
-		g.edges = make(map[Node][]Edge)
+	if g.Edges == nil {
+		g.Edges = make(map[Node][]Edge)
 	}
 
-	g.edges[*n1] = append(g.edges[*n1], Edge{
-		toNode: n2,
-		weight: weight,
+	g.Edges[*n1] = append(g.Edges[*n1], Edge{
+		ToNode: n2,
+		Weight: weight,
 	})
 
-	g.edges[*n2] = append(g.edges[*n2], Edge{
-		toNode: n1,
-		weight: weight,
+	g.Edges[*n2] = append(g.Edges[*n2], Edge{
+		ToNode: n1,
+		Weight: weight,
 	})
 
 	g.lock.Unlock()
@@ -42,24 +42,24 @@ func (g *Graph) AddEdge(n1, n2 *Node, weight int) {
 
 func (g *Graph) AddEdgeRand(seed *rand.Rand, weight int) {
 	g.lock.Lock()
-	if g.edges == nil {
-		g.edges = make(map[Node][]Edge)
+	if g.Edges == nil {
+		g.Edges = make(map[Node][]Edge)
 	}
-	n1 := g.nodes[seed.Intn(len(g.nodes))]
-	n2 := g.nodes[seed.Intn(len(g.nodes))]
+	n1 := g.Nodes[seed.Intn(len(g.Nodes))]
+	n2 := g.Nodes[seed.Intn(len(g.Nodes))]
 
 	for n1 == n2 {
-		n2 = g.nodes[seed.Intn(len(g.nodes))]
+		n2 = g.Nodes[seed.Intn(len(g.Nodes))]
 	}
 
-	g.edges[*n1] = append(g.edges[*n1], Edge{
-		toNode: n2,
-		weight: weight,
+	g.Edges[*n1] = append(g.Edges[*n1], Edge{
+		ToNode: n2,
+		Weight: weight,
 	})
 
-	g.edges[*n2] = append(g.edges[*n2], Edge{
-		toNode: n1,
-		weight: weight,
+	g.Edges[*n2] = append(g.Edges[*n2], Edge{
+		ToNode: n1,
+		Weight: weight,
 	})
 
 	g.lock.Unlock()
@@ -68,12 +68,12 @@ func (g *Graph) AddEdgeRand(seed *rand.Rand, weight int) {
 func (g *Graph) PrintConnections() {
 	g.lock.RLock()
 	s := ""
-	for i := 0; i < len(g.nodes); i++ {
-		s += g.nodes[i].Name() + " -> "
-		near := g.edges[*g.nodes[i]]
+	for i := 0; i < len(g.Nodes); i++ {
+		s += g.Nodes[i].Name + " -> "
+		near := g.Edges[*g.Nodes[i]]
 
 		for j := 0; j < len(near); j++ {
-			s += fmt.Sprintf("%s[%d] ", near[j].toNode.Name(), near[j].weight)
+			s += fmt.Sprintf("%s[%d] ", near[j].ToNode.Name, near[j].Weight)
 		}
 		s += "\n"
 	}

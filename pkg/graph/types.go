@@ -7,23 +7,22 @@ import "sync"
 //if it is a 'crossroad' then it will have the difficulty and rate set to zero
 //the crossings value will be incremented during the testing phase where the most popular nodes are found
 type Node struct {
-	name       string
-	difficulty int
-	rate       int
-	crossings  int
+	Name       string `json:"name"`
+	Difficulty int    `json:"difficulty"`
+	Rate       int    `json:"rate"`
 }
 
 //Edge holds a reference to the connected Node, and the weight of the edge itself
 type Edge struct {
-	toNode *Node
-	weight int
+	ToNode *Node `json:"to_node"`
+	Weight int   `json:"weight"`
 }
 
 //Graph holds all of the nodes and connections
 //It has a list of node references, to allow direct edits
 //It has a map of nodes to edges, that way you can find all the connections of each node
 type Graph struct {
-	nodes []*Node
-	edges map[Node][]Edge
+	Nodes []*Node         `json:"nodes"`
+	Edges map[Node][]Edge `json:"edges"`
 	lock  sync.RWMutex
 }
