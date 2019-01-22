@@ -14,15 +14,15 @@ type Node struct {
 
 //Edge holds a reference to the connected Node, and the weight of the edge itself
 type Edge struct {
-	ToNode *Node `json:"to_node"`
-	Weight int   `json:"weight"`
+	ToNode string `json:"to_node"`
+	Weight int    `json:"weight"`
 }
 
 //Graph holds all of the nodes and connections
 //It has a list of node references, to allow direct edits
 //It has a map of nodes to edges, that way you can find all the connections of each node
 type Graph struct {
-	Nodes []*Node         `json:"nodes"`
-	Edges map[Node][]Edge `json:"edges"`
+	Nodes []*Node           `json:"nodes"`
+	Edges map[string][]Edge `json:"edges"`
 	lock  sync.RWMutex
 }

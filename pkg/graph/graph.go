@@ -23,16 +23,16 @@ func (g *Graph) AddNodeRand(seed *rand.Rand, name string) {
 func (g *Graph) AddEdge(n1, n2 *Node, weight int) {
 	g.lock.Lock()
 	if g.Edges == nil {
-		g.Edges = make(map[Node][]Edge)
+		g.Edges = make(map[string][]Edge)
 	}
 
-	g.Edges[*n1] = append(g.Edges[*n1], Edge{
-		ToNode: n2,
+	g.Edges[n1.Name] = append(g.Edges[n1.Name], Edge{
+		ToNode: n2.Name,
 		Weight: weight,
 	})
 
-	g.Edges[*n2] = append(g.Edges[*n2], Edge{
-		ToNode: n1,
+	g.Edges[n2.Name] = append(g.Edges[n2.Name], Edge{
+		ToNode: n1.Name,
 		Weight: weight,
 	})
 
@@ -43,7 +43,7 @@ func (g *Graph) AddEdge(n1, n2 *Node, weight int) {
 func (g *Graph) AddEdgeRand(seed *rand.Rand, weight int) {
 	g.lock.Lock()
 	if g.Edges == nil {
-		g.Edges = make(map[Node][]Edge)
+		g.Edges = make(map[string][]Edge)
 	}
 	n1 := g.Nodes[seed.Intn(len(g.Nodes))]
 	n2 := g.Nodes[seed.Intn(len(g.Nodes))]
@@ -52,13 +52,13 @@ func (g *Graph) AddEdgeRand(seed *rand.Rand, weight int) {
 		n2 = g.Nodes[seed.Intn(len(g.Nodes))]
 	}
 
-	g.Edges[*n1] = append(g.Edges[*n1], Edge{
-		ToNode: n2,
+	g.Edges[n1.Name] = append(g.Edges[n1.Name], Edge{
+		ToNode: n2.Name,
 		Weight: weight,
 	})
 
-	g.Edges[*n2] = append(g.Edges[*n2], Edge{
-		ToNode: n1,
+	g.Edges[n2.Name] = append(g.Edges[n2.Name], Edge{
+		ToNode: n1.Name,
 		Weight: weight,
 	})
 
@@ -70,10 +70,10 @@ func (g *Graph) PrintConnections() {
 	s := ""
 	for i := 0; i < len(g.Nodes); i++ {
 		s += g.Nodes[i].Name + " -> "
-		near := g.Edges[*g.Nodes[i]]
+		near := g.Edges[g.Nodes[i].Name]
 
 		for j := 0; j < len(near); j++ {
-			s += fmt.Sprintf("%s[%d] ", near[j].ToNode.Name, near[j].Weight)
+			s += fmt.Sprintf("%s[%d] ", near[j].ToNode, near[j].Weight)
 		}
 		s += "\n"
 	}
