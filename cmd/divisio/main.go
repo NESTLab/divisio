@@ -17,15 +17,15 @@ func main() {
 
 	graphMarshall, _ := json.Marshal(g)
 
-	fmt.Println(string(graphMarshall))
+	fmt.Printf("%s\n\n", string(graphMarshall))
 
-	fileWriter, _ := os.Create("Output.json")
+	fileWriter, _ := os.Create("graphs/Output.json")
 	defer fileWriter.Close()
 
 	fileWriter.Write(graphMarshall)
 	fileWriter.Close()
 
-	graphFile, err := ioutil.ReadFile("Output.json")
+	graphFile, err := ioutil.ReadFile("graphs/Output.json")
 
 	if err != nil {
 		panic(err)
