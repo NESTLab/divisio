@@ -2,6 +2,7 @@ package search
 
 import (
 	"container/heap"
+	"github.com/NESTLab/divisio.git/pkg/graph"
 )
 
 func (pq PriorityQueue) Len() int { return len(pq) }
@@ -34,8 +35,8 @@ func (pq *PriorityQueue) Pop() interface{} {
 }
 
 // update modifies the priority and value of an Item in the queue.
-func (pq *PriorityQueue) update(item *Item, value string, priority int) {
-	item.value = value
+func (pq *PriorityQueue) update(item *Item, node *graph.Node, priority int) {
+	item.Node = node
 	item.priority = priority
 	heap.Fix(pq, item.index)
 }
