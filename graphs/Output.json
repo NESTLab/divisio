@@ -1,1 +1,181 @@
-{"nodes":[{"name":"0","difficulty":84,"rate":91},{"name":"1","difficulty":61,"rate":89},{"name":"2","difficulty":77,"rate":63},{"name":"3","difficulty":70,"rate":83},{"name":"4","difficulty":91,"rate":60},{"name":"5","difficulty":96,"rate":72},{"name":"6","difficulty":99,"rate":93}],"edges":{"0":[{"to_node":"5","weight":62},{"to_node":"3","weight":13},{"to_node":"4","weight":84},{"to_node":"6","weight":39}],"2":[{"to_node":"4","weight":94},{"to_node":"4","weight":55},{"to_node":"4","weight":33},{"to_node":"6","weight":32},{"to_node":"6","weight":22},{"to_node":"5","weight":87}],"3":[{"to_node":"4","weight":91},{"to_node":"6","weight":78},{"to_node":"6","weight":61},{"to_node":"4","weight":83},{"to_node":"0","weight":13},{"to_node":"4","weight":45},{"to_node":"5","weight":36},{"to_node":"6","weight":42},{"to_node":"6","weight":83}],"4":[{"to_node":"3","weight":91},{"to_node":"2","weight":94},{"to_node":"3","weight":83},{"to_node":"2","weight":55},{"to_node":"2","weight":33},{"to_node":"3","weight":45},{"to_node":"0","weight":84},{"to_node":"6","weight":17}],"5":[{"to_node":"6","weight":3},{"to_node":"0","weight":62},{"to_node":"6","weight":52},{"to_node":"3","weight":36},{"to_node":"2","weight":87}],"6":[{"to_node":"3","weight":78},{"to_node":"3","weight":61},{"to_node":"5","weight":3},{"to_node":"5","weight":52},{"to_node":"2","weight":32},{"to_node":"2","weight":22},{"to_node":"0","weight":39},{"to_node":"4","weight":17},{"to_node":"3","weight":42},{"to_node":"3","weight":83}]}}
+{
+  "nodes": [
+    {
+      "name": "0",
+      "difficulty": 85,
+      "rate": 55,
+      "pos": {
+        "x": 42,
+        "y": 58
+      }
+    },
+    {
+      "name": "1",
+      "difficulty": 52,
+      "rate": 79,
+      "pos": {
+        "x": 18,
+        "y": 82
+      }
+    },
+    {
+      "name": "2",
+      "difficulty": 66,
+      "rate": 55,
+      "pos": {
+        "x": 26,
+        "y": 99
+      }
+    },
+    {
+      "name": "3",
+      "difficulty": 88,
+      "rate": 54,
+      "pos": {
+        "x": 36,
+        "y": 67
+      }
+    },
+    {
+      "name": "4",
+      "difficulty": 97,
+      "rate": 89,
+      "pos": {
+        "x": 47,
+        "y": 33
+      }
+    }
+  ],
+  "edges": {
+    "0": [
+      {
+        "to_node": "3",
+        "weight": 38
+      },
+      {
+        "to_node": "2",
+        "weight": 58
+      },
+      {
+        "to_node": "4",
+        "weight": 78
+      },
+      {
+        "to_node": "4",
+        "weight": 73
+      },
+      {
+        "to_node": "3",
+        "weight": 49
+      },
+      {
+        "to_node": "3",
+        "weight": 40
+      }
+    ],
+    "1": [
+      {
+        "to_node": "2",
+        "weight": 16
+      },
+      {
+        "to_node": "2",
+        "weight": 85
+      },
+      {
+        "to_node": "4",
+        "weight": 60
+      },
+      {
+        "to_node": "3",
+        "weight": 53
+      }
+    ],
+    "2": [
+      {
+        "to_node": "1",
+        "weight": 16
+      },
+      {
+        "to_node": "1",
+        "weight": 85
+      },
+      {
+        "to_node": "0",
+        "weight": 58
+      },
+      {
+        "to_node": "4",
+        "weight": 84
+      },
+      {
+        "to_node": "3",
+        "weight": 21
+      }
+    ],
+    "3": [
+      {
+        "to_node": "4",
+        "weight": 31
+      },
+      {
+        "to_node": "0",
+        "weight": 38
+      },
+      {
+        "to_node": "4",
+        "weight": 56
+      },
+      {
+        "to_node": "0",
+        "weight": 49
+      },
+      {
+        "to_node": "4",
+        "weight": 25
+      },
+      {
+        "to_node": "0",
+        "weight": 40
+      },
+      {
+        "to_node": "1",
+        "weight": 53
+      },
+      {
+        "to_node": "2",
+        "weight": 21
+      }
+    ],
+    "4": [
+      {
+        "to_node": "3",
+        "weight": 31
+      },
+      {
+        "to_node": "2",
+        "weight": 84
+      },
+      {
+        "to_node": "0",
+        "weight": 78
+      },
+      {
+        "to_node": "0",
+        "weight": 73
+      },
+      {
+        "to_node": "1",
+        "weight": 60
+      },
+      {
+        "to_node": "3",
+        "weight": 56
+      },
+      {
+        "to_node": "3",
+        "weight": 25
+      }
+    ]
+  }
+}
