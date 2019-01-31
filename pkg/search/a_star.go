@@ -22,3 +22,46 @@ func GCost(g graph.Graph, start string, end string) int {
 
 	return -1
 }
+
+func AStarSearch(g graph.Graph, start, end string) (map[string]string, map[string]int) {
+	frontier := make(PriorityQueue, len(g.Nodes))
+	startNode := Item{
+		Node:     g.GetNode(start),
+		priority: 0,
+	}
+	frontier.Push(startNode)
+
+	cameFrom := make(map[string]string)
+	costSoFar := make(map[string]int)
+
+	cameFrom[start] = ""
+	costSoFar[start] = 0
+
+	for frontier.Len() > 0 {
+		current := frontier.Pop().(Item)
+		currentName := current.Node.Name
+
+		if current.Node.Name == end {
+			break
+		}
+
+		for ii := 0; ii < len(g.Edges[currentName]); ii++ {
+			toName := g.Edges[currentName][ii].ToNode
+			thisCost := GCost(g, currentName, toName)
+			newCost := costSoFar[currentName] + thisCost
+
+			_, inCostSoFar := costSoFar[toName]
+			if !inCostSoFar || newCost < costSoFar[toName] {
+				costSoFar[toName] = newCost
+				priority := newCost + HCost(g, start, end)
+				frontier.Push(Item{
+					Node:     g.GetNode(toName),
+					priority: priority,
+				})
+				cameFrom[toName] = currentName
+			}
+		}
+	}
+
+	return cameFrom, costSoFar
+}
