@@ -2,7 +2,6 @@ package graph
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 )
 
@@ -109,25 +108,4 @@ func (g *Graph) GetEdge(start, end string) Edge {
 	}
 
 	return Edge{"", 0}
-}
-
-func (g Graph) HCost(start, end string) int {
-	g.lock.RLock()
-	defer g.lock.Unlock()
-	startNode := g.GetNode(start)
-	endNode := g.GetNode(end)
-
-	return int(math.Abs(float64(endNode.Pos.Y-startNode.Pos.Y)) + math.Abs(float64(endNode.Pos.X-startNode.Pos.X)))
-}
-
-func (g Graph) GCost(start, end string) int {
-	g.lock.RLock()
-	defer g.lock.Unlock()
-
-	weight := g.GetEdge(start, end).Weight
-	if weight != 0 {
-		return weight
-	}
-
-	return -1
 }
