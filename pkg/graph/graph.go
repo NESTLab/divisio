@@ -86,7 +86,7 @@ func (g *Graph) PrintConnections() {
 
 func (g *Graph) GetNode(name string) *Node {
 	g.lock.RLock()
-	defer g.lock.Unlock()
+	defer g.lock.RUnlock()
 
 	for ii := 0; ii < len(g.Nodes); ii++ {
 		if g.Nodes[ii].Name == name {
@@ -98,7 +98,7 @@ func (g *Graph) GetNode(name string) *Node {
 
 func (g *Graph) GetEdge(start, end string) Edge {
 	g.lock.RLock()
-	defer g.lock.Unlock()
+	defer g.lock.RUnlock()
 	edgeList := g.Edges[start]
 
 	for _, edge := range edgeList {
