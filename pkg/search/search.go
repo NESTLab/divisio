@@ -25,6 +25,7 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 
 	//Iterate over all the task nodes for starting locations
 	for _, startNode := range taskNodes {
+		//Ignore empty strings from slice array lengthening
 		if startNode != "" {
 			//Iterate over all the task nodes for end locations
 			for _, endNode := range taskNodes {
@@ -35,7 +36,7 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 						switch mode {
 						case AStarMode:
 							cameFrom, _ := AStarSearch(g, startNode, endNode)
-							path = ReconstructPath(cameFrom, startNode, endNode, false)
+							path = AStarReconstructPath(cameFrom, startNode, endNode, false)
 						}
 
 						for _, passedNode := range path {
@@ -51,6 +52,7 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 	return passes
 }
 
+//contains is just a simple check to see if a node is within a slice of nodes already
 func contains(slice []string, node string) bool {
 	for _, n := range slice {
 		if n == node {
