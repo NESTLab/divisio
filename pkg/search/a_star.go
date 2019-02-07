@@ -66,15 +66,24 @@ func AStarSearch(g graph.Graph, start, end string) (map[string]string, map[strin
 	return cameFrom, costSoFar
 }
 
-func ReconstructPath(cameFrom map[string]string, start string, end string) []string {
-	current := end
+func ReconstructPath(cameFrom map[string]string, start string, end string, onlyMid bool) []string {
+	var current string
+
+	if onlyMid {
+		current = cameFrom[end]
+	} else {
+		current = end
+	}
+
 	path := make([]string, 0)
 
 	for current != start {
 		path = append(path, current)
 		current = cameFrom[current]
 	}
-	path = append(path, start)
+	if !onlyMid {
+		path = append(path, start)
+	}
 
 	for i := len(path)/2 - 1; i >= 0; i-- {
 		opp := len(path) - 1 - i
