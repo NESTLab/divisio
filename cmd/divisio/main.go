@@ -3,29 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/NESTLab/divisio.git/pkg/builder"
 	"github.com/NESTLab/divisio.git/pkg/graph"
+	"github.com/NESTLab/divisio.git/pkg/search"
 	"io/ioutil"
-	"os"
-	"time"
 )
 
 func main() {
-	g := builder.GraphBuilderRand(time.Now().Unix())
-
-	g.PrintConnections()
-
-	graphMarshall, _ := json.Marshal(g)
-
-	fmt.Printf("%s\n\n", string(graphMarshall))
-
-	fileWriter, _ := os.Create("graphs/Output.json")
-	defer fileWriter.Close()
-
-	fileWriter.Write(graphMarshall)
-	fileWriter.Close()
-
-	graphFile, err := ioutil.ReadFile("graphs/Output.json")
+	graphFile, err := ioutil.ReadFile("graphs/example_one.json")
 
 	if err != nil {
 		panic(err)
@@ -38,5 +22,8 @@ func main() {
 	}
 
 	g2.PrintConnections()
+
+	passes := search.PostOfficeSelection(g2, search.AStarMode)
+	fmt.Println(passes)
 
 }
