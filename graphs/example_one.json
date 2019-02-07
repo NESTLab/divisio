@@ -42,8 +42,8 @@
       }
     },{
       "name": "6",
-      "difficulty": 0,
-      "rate": 0,
+      "difficulty": 50,
+      "rate": 50,
       "pos": {
         "x": 50,
         "y": 40
