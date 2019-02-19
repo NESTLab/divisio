@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	graphFile, err := ioutil.ReadFile("graphs/example_one.json")
+	graphFile, err := ioutil.ReadFile("graphs/misc/example_one.json")
 
 	if err != nil {
 		panic(err)
