@@ -12,20 +12,29 @@ func GraphBuilderRand(seed int64) *graph.Graph {
 
 	var g graph.Graph
 
-	numNodes := randGen.Intn(5) + 5
+	numNodes := randGen.Intn(5) + 10
 
 	for ii := 0; ii < numNodes; ii++ {
-		g.AddNodeRand(randGen, fmt.Sprintf("%d", ii))
+		name := fmt.Sprintf("%d", ii)
+
+		//30% chance of being a task. ~2-5 task nodes per graph
+		if randGen.Intn(100) > 30 {
+			g.AddNodeRand(randGen, name, true)
+		} else {
+			g.AddNodeRand(randGen, name, false)
+		}
 	}
 
-	for ii := 0; ii < 3*numNodes; ii++ {
+	edgeNumFactor := randGen.Intn(2) + 2 //2-4x number of nodes
+
+	for ii := 0; ii < edgeNumFactor*numNodes; ii++ {
 		randWeight := randGen.Intn(100)
 		g.AddEdgeRand(randGen, randWeight)
 	}
 
 	fmt.Println("New graph built")
 	fmt.Println("Number of Nodes: " + fmt.Sprintf("%d", numNodes))
-	fmt.Println("Number of Edges: " + fmt.Sprintf("%d", 3*numNodes))
+	fmt.Println("Number of Edges: " + fmt.Sprintf("%d", edgeNumFactor*numNodes))
 
 	return &g
 }

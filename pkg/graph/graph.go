@@ -12,11 +12,20 @@ func (g *Graph) AddNode(n *Node) {
 
 }
 
-func (g *Graph) AddNodeRand(seed *rand.Rand, name string) {
+func (g *Graph) AddNodeRand(seed *rand.Rand, name string, isCrossroads bool) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
-	difficulty := seed.Intn(50) + 50
-	rate := seed.Intn(50) + 50
+	var difficulty int
+	var rate int
+
+	if isCrossroads {
+		difficulty = 0
+		rate = 0
+	} else {
+		difficulty = seed.Intn(50) + 50
+		rate = seed.Intn(50) + 50
+	}
+
 	x := seed.Intn(100)
 	y := seed.Intn(100)
 	n := MakeNode(name, difficulty, rate, x, y)
