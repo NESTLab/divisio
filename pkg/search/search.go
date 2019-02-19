@@ -1,11 +1,15 @@
 package search
 
-import "github.com/NESTLab/divisio.git/pkg/graph"
+import (
+	"fmt"
+	"github.com/NESTLab/divisio.git/pkg/graph"
+)
 
 //These are different modes for how to select the Post office
 //These are different modes for how to select the Post office
 const (
-	AStarMode = 0
+	AStarMode       = 0
+	BetweennessMode = 1
 )
 
 //PostOfficeSelection takes in a graph and a chosen mode and returns a map of nodes with number of visits recorded via path planning between Tasks
@@ -27,25 +31,27 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 	for _, startNode := range taskNodes {
 		//Ignore empty strings from slice array lengthening
 		if startNode != "" {
-			//Iterate over all the task nodes for end locations
-			for _, endNode := range taskNodes {
-				if endNode != "" {
-					//If the end node hasn't been completed
-					if !contains(doneNodes, endNode) && endNode != startNode {
-						var path []string
-						switch mode {
-						case AStarMode:
-							cameFrom, _ := AStarSearch(g, startNode, endNode)
-							path = AStarReconstructPath(cameFrom, startNode, endNode, false)
-						}
 
-						for _, passedNode := range path {
-							passes[passedNode]++
+			switch mode {
+			case AStarMode:
+				for _, endNode := range taskNodes {
+					if endNode != "" {
+						if !contains(doneNodes, endNode) && endNode != startNode {
+							cameFrom, _ := AStarSearch(g, startNode, endNode)
+							//Stores the path from task node to task node
+							var path []string
+							path = AStarReconstructPath(cameFrom, startNode, endNode, false)
+							for _, passedNode := range path {
+								passes[passedNode]++
+							}
 						}
 					}
 				}
+				doneNodes = append(doneNodes, startNode)
+			case BetweennessMode:
+				fmt.Println("Hello there")
 			}
-			doneNodes = append(doneNodes, startNode)
+
 		}
 	}
 
