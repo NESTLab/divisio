@@ -1,9 +1,9 @@
 package builder
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/NESTLab/divisio.git/pkg/graph"
+	"github.com/NESTLab/divisio.git/pkg/stream"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -13,30 +13,27 @@ import (
 	"time"
 )
 
-func GraphBuilderRand(seed int64) *graph.Graph {
-	randSeed := rand.NewSource(seed)
-	randGen := rand.New(randSeed)
-
+func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	var g graph.Graph
 
-	numNodes := randGen.Intn(5) + 10
+	numNodes := randObj.Intn(5) + 10
 
 	for ii := 0; ii < numNodes; ii++ {
 		name := fmt.Sprintf("%d", ii)
 
 		//30% chance of being a task. ~2-5 task nodes per graph
-		if randGen.Intn(100) > 30 {
-			g.AddNodeRand(randGen, name, true)
+		if randObj.Intn(100) > 30 {
+			g.AddNodeRand(randObj, name, true)
 		} else {
-			g.AddNodeRand(randGen, name, false)
+			g.AddNodeRand(randObj, name, false)
 		}
 	}
 
-	edgeNumFactor := randGen.Intn(2) + 2 //2-4x number of nodes
+	edgeNumFactor := randObj.Intn(2) + 2 //2-4x number of nodes
 
 	for ii := 0; ii < edgeNumFactor*numNodes; ii++ {
-		randWeight := randGen.Intn(100)
-		g.AddEdgeRand(randGen, randWeight)
+		randWeight := randObj.Intn(100)
+		g.AddEdgeRand(randObj, randWeight)
 	}
 
 	fmt.Println("New graph built")
@@ -86,28 +83,19 @@ func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
 	//Make the file with free permissions
 	os.Mkdir(dirName, os.ModeDir|0777)
 
+	//Make the random generator
+	randSeed := rand.NewSource(time.Now().Unix())
+	randObj := rand.New(randSeed)
+
 	//Each loop creates a new graph
 	for ii := 0; ii < numGraphsToMake; ii++ {
-		//Build the graph with time as the seed. Since this executes in under a second, in order to get true randomness
-		//we add the index*1000 of the loop to the time.
-		g := GraphBuilderRand(time.Now().Unix() + int64(1000*ii))
-		graphs[ii] = g
+		//Build the graph
+		g := GraphBuilderRand(randObj)
 
-		//Convert the graph object to json format
-		g2, err := json.Marshal(g)
-		if err != nil {
-			log.Fatal(err)
-		}
-		//Build the graph name. Each graph is named for the group it's in to avoid any duplicates
-		graphName := fmt.Sprintf("%s/group_%d_graph_%d.json", dirName, dirNum, ii+1)
-		//Create the file
-		fw, err := os.Create(graphName)
-		if err != nil {
-			log.Fatal(err)
-		}
-		//Write the json to the file, then close the file
-		fw.Write(g2)
-		fw.Close()
+		//Since the slice was pre-generated to the correct size, we don't need to append it
+		graphs[ii] = g
 	}
+
+	stream.StreamOut(graphs, path)
 	return graphs
 }
