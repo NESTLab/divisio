@@ -8,7 +8,6 @@ import (
 	"github.com/NESTLab/divisio.git/pkg/search"
 	"github.com/NESTLab/divisio.git/pkg/stream"
 	"log"
-	"strconv"
 )
 
 var pathToTestBatch = flag.String("testPath", "",
@@ -33,11 +32,8 @@ func main() {
 	graphs := make(map[string]*graph.Graph)
 
 	if generateTestGraphs {
-		genGraphs := builder.GenerateGraphs(*numberToGenerate, *pathToGenBatch)
-		for ii, g := range genGraphs {
-			name := strconv.Itoa(ii)
-			graphs[name] = g
-		}
+		graphs = builder.GenerateGraphs(*numberToGenerate, *pathToGenBatch)
+
 	} else {
 		streamGraphs, err := stream.In(*pathToTestBatch)
 		if err != nil {
@@ -48,8 +44,10 @@ func main() {
 
 	var output string
 	for name, g := range graphs {
-		passes := search.PostOfficeSelection(*g, search.BetweennessMode)
+		passes := search.PostOfficeSelection(*g, search.AStarMode)
 		output = fmt.Sprintf("%s%s: %v\n", output, name, passes)
+		fmt.Printf("%s:####################", name)
+		g.PrintConnections()
 	}
 	fmt.Println(output)
 }

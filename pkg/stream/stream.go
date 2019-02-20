@@ -8,15 +8,15 @@ import (
 	"os"
 )
 
-func Out(graphs []*graph.Graph, directoryName string) error {
-	for ii, g := range graphs {
+func Out(graphs map[string]*graph.Graph, directoryName string) error {
+	for name, g := range graphs {
 		//Convert the graph object to json format
 		jsonGraph, err := json.Marshal(g)
 		if err != nil {
 			return err
 		}
 		//Build the graph name. Each graph is named for the group it's in to avoid any duplicates
-		graphName := fmt.Sprintf("%s/graph_%d.json", directoryName, ii+1)
+		graphName := fmt.Sprintf("%s/graph_%s.json", directoryName, name)
 		//Create the file
 		fw, err := os.Create(graphName)
 		if err != nil {

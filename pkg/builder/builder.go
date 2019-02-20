@@ -50,9 +50,9 @@ func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 }
 
 //GenerateGraphs generates numGraphsToMake of random graphs, and stores them at path
-func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
-	graphs := make([]*graph.Graph, numGraphsToMake, numGraphsToMake)
-	//store the contents of 'graphs' as a slice of strings
+func GenerateGraphs(numGraphsToMake int, path string) map[string]*graph.Graph {
+	graphs := make(map[string]*graph.Graph)
+	//store the contents of 'path' as a slice of fileIO
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
@@ -99,8 +99,8 @@ func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
 		//Build the graph
 		g := GraphBuilderRand(randObj)
 
-		//Since the slice was pre-generated to the correct size, we don't need to append it
-		graphs[ii] = g
+		name := strconv.Itoa(ii)
+		graphs[name] = g
 	}
 
 	stream.Out(graphs, dirName)
