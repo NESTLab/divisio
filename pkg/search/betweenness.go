@@ -4,6 +4,12 @@ import "github.com/NESTLab/divisio.git/pkg/graph"
 
 func BetweennessSearch(g graph.Graph, start string) map[string]int {
 	nodeFlow := make(map[string]int)
+	nodeHierarchy := GetNodeHierarchy(g, start)
+	for levelIndex, level := range nodeHierarchy {
+		for _, name := range level {
+			nodeFlow[name] = levelIndex
+		}
+	}
 	return nodeFlow
 }
 

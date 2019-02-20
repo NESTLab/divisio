@@ -21,9 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	g2.PrintConnections()
+	passes := search.PostOfficeSelection(g2, search.BetweennessMode)
 
-	passes := search.PostOfficeSelection(g2, search.AStarMode)
 	fmt.Println(passes)
-
 }

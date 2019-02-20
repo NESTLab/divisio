@@ -1,7 +1,6 @@
 package search
 
 import (
-	"fmt"
 	"github.com/NESTLab/divisio.git/pkg/graph"
 )
 
@@ -49,7 +48,10 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 				}
 				doneNodes = append(doneNodes, startNode)
 			case BetweennessMode:
-				fmt.Println("Hello there")
+				nodePasses := BetweennessSearch(g, startNode)
+				for name, rank := range nodePasses {
+					passes[name] += rank
+				}
 			}
 
 		}
