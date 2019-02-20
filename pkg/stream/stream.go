@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/NESTLab/divisio.git/pkg/graph"
+	"io/ioutil"
 	"os"
 )
 
@@ -26,4 +27,26 @@ func Out(graphs []*graph.Graph, directoryName string) error {
 		fw.Close()
 	}
 	return nil
+}
+
+func In(pathToGraphs string) (map[string]*graph.Graph, error) {
+	graphs := make(map[string]*graph.Graph)
+	files, err := ioutil.ReadDir(pathToGraphs)
+	if err != nil {
+		return graphs, err
+	}
+
+	for _, filename := range files {
+		graphFile, err := ioutil.ReadFile(pathToGraphs + "/" + filename.Name())
+		if err != nil {
+			return graphs, err
+		}
+		var g graph.Graph
+		err = json.Unmarshal(graphFile, &g)
+		if err != nil {
+			return graphs, err
+		}
+		graphs[filename.Name()] = &g
+	}
+	return graphs, nil
 }
