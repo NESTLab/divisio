@@ -53,7 +53,7 @@ func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
 	graphs := make([]*graph.Graph, numGraphsToMake, numGraphsToMake)
 	//store the contents of 'graphs' as a slice of strings
-	files, err := ioutil.ReadDir("graphs")
+	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,6 +103,6 @@ func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
 		graphs[ii] = g
 	}
 
-	stream.Out(graphs, path)
+	stream.Out(graphs, dirName)
 	return graphs
 }
