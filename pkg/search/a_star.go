@@ -24,7 +24,7 @@ func GCost(g graph.Graph, start string, end string) int {
 }
 
 func AStarSearch(g graph.Graph, start, end string) (map[string]string, map[string]int) {
-	frontier := make(PriorityQueue, len(g.Nodes))
+	frontier := make(PriorityQueue, 0)
 	startNode := &Item{
 		Node:     g.GetNode(start),
 		priority: 0,
