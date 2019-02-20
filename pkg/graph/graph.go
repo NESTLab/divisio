@@ -5,6 +5,7 @@ import (
 	"math/rand"
 )
 
+//AddNode adds the provided node n to the graph g
 func (g *Graph) AddNode(n *Node) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
@@ -12,7 +13,11 @@ func (g *Graph) AddNode(n *Node) {
 
 }
 
-func (g *Graph) AddNodeRand(seed *rand.Rand, name string, isCrossroads bool) {
+//AddNodeRand adds a node to the graph g that is randomly generated
+//randObj is the seeded rand object that provides the random numbers
+//name is the name of the node, usually just its index
+//isCrossroads denotes whether the rate and difficulty are set to random variables (false), or 0 (true)
+func (g *Graph) AddNodeRand(randObj *rand.Rand, name string, isCrossroads bool) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 	var difficulty int
@@ -22,17 +27,18 @@ func (g *Graph) AddNodeRand(seed *rand.Rand, name string, isCrossroads bool) {
 		difficulty = 0
 		rate = 0
 	} else {
-		difficulty = seed.Intn(50) + 50
-		rate = seed.Intn(50) + 50
+		difficulty = randObj.Intn(50) + 50
+		rate = randObj.Intn(50) + 50
 	}
 
-	x := seed.Intn(100)
-	y := seed.Intn(100)
+	x := randObj.Intn(100)
+	y := randObj.Intn(100)
 	n := MakeNode(name, difficulty, rate, x, y)
 	g.Nodes = append(g.Nodes, n)
 
 }
 
+//AddEdge connects the two provided nodes with an Edge of weight weight
 func (g *Graph) AddEdge(n1, n2 *Node, weight int) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
@@ -52,17 +58,18 @@ func (g *Graph) AddEdge(n1, n2 *Node, weight int) {
 
 }
 
-func (g *Graph) AddEdgeRand(seed *rand.Rand, weight int) {
+//AddEdgeRand chooses two random nodes via randObj and with provided weight
+func (g *Graph) AddEdgeRand(randObj *rand.Rand, weight int) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 	if g.Edges == nil {
 		g.Edges = make(map[string][]Edge)
 	}
-	n1 := g.Nodes[seed.Intn(len(g.Nodes))]
-	n2 := g.Nodes[seed.Intn(len(g.Nodes))]
+	n1 := g.Nodes[randObj.Intn(len(g.Nodes))]
+	n2 := g.Nodes[randObj.Intn(len(g.Nodes))]
 
 	for n1 == n2 {
-		n2 = g.Nodes[seed.Intn(len(g.Nodes))]
+		n2 = g.Nodes[randObj.Intn(len(g.Nodes))]
 	}
 
 	g.Edges[n1.Name] = append(g.Edges[n1.Name], Edge{
@@ -76,6 +83,7 @@ func (g *Graph) AddEdgeRand(seed *rand.Rand, weight int) {
 	})
 }
 
+//PrintConnections prints one node per row, with all their connections listed to the right, with weight in brackets
 func (g *Graph) PrintConnections() {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
@@ -93,6 +101,7 @@ func (g *Graph) PrintConnections() {
 
 }
 
+//GetNode returns the pointer to a Node via it's string name
 func (g *Graph) GetNode(name string) *Node {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
@@ -105,6 +114,7 @@ func (g *Graph) GetNode(name string) *Node {
 	return nil
 }
 
+//GetEdge returns the pointer to the Edge that corresponds to the two provided names
 func (g *Graph) GetEdge(start, end string) Edge {
 	g.lock.RLock()
 	defer g.lock.RUnlock()
