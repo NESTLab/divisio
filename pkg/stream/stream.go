@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func StreamOut(graphs []*graph.Graph, directoryName string) error {
+func Out(graphs []*graph.Graph, directoryName string) error {
 	for ii, g := range graphs {
 		//Convert the graph object to json format
 		jsonGraph, err := json.Marshal(g)

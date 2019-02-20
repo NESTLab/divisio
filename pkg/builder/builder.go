@@ -13,6 +13,12 @@ import (
 	"time"
 )
 
+//GraphBuilderRand takes in an instance of rand.Rand and returns a reference to a graph.
+//The random quantities and their ranges are as follows:
+//numNodes: 10 - 14
+//Chance the node is a Task: 0.3
+//number of edges 2-4x number of nodes
+//edge weight: 50-100
 func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	var g graph.Graph
 
@@ -32,7 +38,7 @@ func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	edgeNumFactor := randObj.Intn(2) + 2 //2-4x number of nodes
 
 	for ii := 0; ii < edgeNumFactor*numNodes; ii++ {
-		randWeight := randObj.Intn(100)
+		randWeight := randObj.Intn(50) + 50
 		g.AddEdgeRand(randObj, randWeight)
 	}
 
@@ -43,6 +49,7 @@ func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	return &g
 }
 
+//GenerateGraphs generates numGraphsToMake of random graphs, and stores them at path
 func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
 	graphs := make([]*graph.Graph, numGraphsToMake, numGraphsToMake)
 	//store the contents of 'graphs' as a slice of strings
@@ -96,6 +103,6 @@ func GenerateGraphs(numGraphsToMake int, path string) []*graph.Graph {
 		graphs[ii] = g
 	}
 
-	stream.StreamOut(graphs, path)
+	stream.Out(graphs, path)
 	return graphs
 }
