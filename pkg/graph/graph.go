@@ -89,8 +89,15 @@ func (g *Graph) PrintConnections() {
 	defer g.lock.RUnlock()
 	s := ""
 	for i := 0; i < len(g.Nodes); i++ {
-		s += g.Nodes[i].Name + " -> "
+
+		s += g.Nodes[i].Name
+		if g.Nodes[i].Rate > 0 {
+			s += "T"
+		} else {
+			s += "C"
+		}
 		near := g.Edges[g.Nodes[i].Name]
+		s += " -> "
 
 		for j := 0; j < len(near); j++ {
 			s += fmt.Sprintf("%s[%d] ", near[j].ToNode, near[j].Weight)
@@ -127,4 +134,11 @@ func (g *Graph) GetEdge(start, end string) Edge {
 	}
 
 	return Edge{"", 0}
+}
+
+func (g *Graph) GetEdges(start string) []Edge {
+	g.lock.RLock()
+	defer g.lock.RUnlock()
+
+	return g.Edges[start]
 }
