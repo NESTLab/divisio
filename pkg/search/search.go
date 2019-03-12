@@ -69,3 +69,12 @@ func contains(slice []string, node string) bool {
 	}
 	return false
 }
+
+func POSRoutine(graphs <-chan *graph.GraphResults, result chan<- *graph.GraphResults, mode int) {
+	for g := range graphs {
+
+		g.Results = PostOfficeSelection(*g.GraphObj, mode)
+
+		result <- g
+	}
+}

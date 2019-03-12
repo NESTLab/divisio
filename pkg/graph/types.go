@@ -33,3 +33,10 @@ type Location struct {
 	X int `json:"x"`
 	Y int `json:"y"`
 }
+
+//GraphResults holds a graph ref, its name, and the eventual results from the post office selection
+type GraphResults struct {
+	GraphObj *Graph
+	Name     string
+	Results  map[string]int
+}
