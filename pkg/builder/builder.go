@@ -33,6 +33,18 @@ func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 		} else {
 			g.AddNodeRand(randObj, name, false)
 		}
+		if ii != 0 {
+			for {
+				whichNode := randObj.Intn(len(g.Nodes))
+				whichNodeName := g.Nodes[whichNode].Name
+				if whichNodeName != name {
+					edgeWeight := randObj.Intn(50) + 50
+					g.AddEdge(g.GetNode(whichNodeName), g.GetNode(name), edgeWeight)
+					break
+				}
+			}
+		}
+
 	}
 
 	edgeNumFactor := randObj.Intn(2) + 2 //2-4x number of nodes
