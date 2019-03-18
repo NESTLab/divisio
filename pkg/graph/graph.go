@@ -65,13 +65,23 @@ func (g *Graph) AddEdgeRand(randObj *rand.Rand, weight int) {
 	if g.Edges == nil {
 		g.Edges = make(map[string][]Edge)
 	}
-	n1 := g.Nodes[randObj.Intn(len(g.Nodes))]
-	n2 := g.Nodes[randObj.Intn(len(g.Nodes))]
+	var n1, n2 *Node
 
-	for n1 == n2 {
+	for {
+		n1 = g.Nodes[randObj.Intn(len(g.Nodes))]
 		n2 = g.Nodes[randObj.Intn(len(g.Nodes))]
-	}
 
+		var EdgeExists bool
+		for _, whichNodeEdge := range g.Edges[n1.Name] {
+			if whichNodeEdge.ToNode == n2.Name {
+				EdgeExists = true
+			}
+		}
+		if n1.Name != n2.Name && !EdgeExists {
+			break
+		}
+
+	}
 	g.Edges[n1.Name] = append(g.Edges[n1.Name], Edge{
 		ToNode: n2.Name,
 		Weight: weight,
@@ -81,6 +91,7 @@ func (g *Graph) AddEdgeRand(randObj *rand.Rand, weight int) {
 		ToNode: n1.Name,
 		Weight: weight,
 	})
+
 }
 
 //PrintConnections prints one node per row, with all their connections listed to the right, with weight in brackets

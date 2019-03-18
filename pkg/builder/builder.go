@@ -37,7 +37,13 @@ func GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 			for {
 				whichNode := randObj.Intn(len(g.Nodes))
 				whichNodeName := g.Nodes[whichNode].Name
-				if whichNodeName != name {
+				var EdgeExists bool
+				for _, whichNodeEdge := range g.GetEdges(whichNodeName) {
+					if whichNodeEdge.ToNode == name {
+						EdgeExists = true
+					}
+				}
+				if whichNodeName != name && !EdgeExists {
 					edgeWeight := randObj.Intn(50) + 50
 					g.AddEdge(g.GetNode(whichNodeName), g.GetNode(name), edgeWeight)
 					break
