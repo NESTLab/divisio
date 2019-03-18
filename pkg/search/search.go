@@ -2,6 +2,9 @@ package search
 
 import (
 	"github.com/NESTLab/divisio.git/pkg/graph"
+	"gonum.org/v1/gonum/mat"
+	"log"
+	"strconv"
 )
 
 //These are different modes for how to select the Post office
@@ -60,6 +63,31 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 	return passes
 }
 
+func CalculateLaplacian(g graph.Graph) *mat.Dense {
+	matSize := len(g.Nodes)
+	lapData := make([]float64, 0)
+	//Go through each row, as NewDense takes a row-major slice
+	for node, edges := range g.Edges {
+		rowData := make([]float64, matSize)
+		numEdges := len(edges)
+		for _, edge := range edges {
+			edgeNum, err := strconv.Atoi(edge.ToNode)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			rowData[edgeNum] = -1
+		}
+		nodeNum, err := strconv.Atoi(node)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		rowData[nodeNum] = float64(numEdges)
+		lapData = append(lapData, rowData...)
+	}
+
+	return mat.NewDense(matSize, matSize, lapData)
+}
+
 //contains is just a simple check to see if a node is within a slice of nodes already
 func contains(slice []string, node string) bool {
 	for _, n := range slice {
@@ -70,10 +98,11 @@ func contains(slice []string, node string) bool {
 	return false
 }
 
-func POSRoutine(graphs <-chan *graph.GraphResults, result chan<- *graph.GraphResults, mode int) {
+func POSRoutine(graphs <-chan *graph.Results, result chan<- *graph.Results, mode int) {
 	for g := range graphs {
 
 		g.Results = PostOfficeSelection(*g.GraphObj, mode)
+		g.Laplacian = CalculateLaplacian(*g.GraphObj)
 
 		result <- g
 	}

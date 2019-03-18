@@ -51,15 +51,15 @@ func main() {
 		graphs = streamGraphs
 	}
 
-	graphChan := make(chan *graph.GraphResults, 100)
-	resultsChan := make(chan *graph.GraphResults, 100)
+	graphChan := make(chan *graph.Results, 100)
+	resultsChan := make(chan *graph.Results, 100)
 
 	for ww := 0; ww < 4; ww++ {
 		go search.POSRoutine(graphChan, resultsChan, *testMode)
 	}
 
 	for name, g := range graphs {
-		gr := new(graph.GraphResults)
+		gr := new(graph.Results)
 		gr.GraphObj = g
 		gr.Name = name
 		graphChan <- gr
@@ -70,7 +70,7 @@ func main() {
 	var out string
 	for ii := 0; ii < len(graphs); ii++ {
 		gr := <-resultsChan
-		out += fmt.Sprintf("%s: %v\n", gr.Name, gr.Results)
+		out += fmt.Sprintf("%s: %v\n%v\n", gr.Name, gr.Results, gr.Laplacian)
 	}
 	fmt.Println(out)
 }

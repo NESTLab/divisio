@@ -1,6 +1,9 @@
 package graph
 
-import "sync"
+import (
+	"gonum.org/v1/gonum/mat"
+	"sync"
+)
 
 //Node is each hub of the graph
 //If the node is a 'task' then it will have some positive difficulty and rate
@@ -34,9 +37,10 @@ type Location struct {
 	Y int `json:"y"`
 }
 
-//GraphResults holds a graph ref, its name, and the eventual results from the post office selection
-type GraphResults struct {
-	GraphObj *Graph
-	Name     string
-	Results  map[string]int
+//Results holds a graph ref, its name, and the eventual results from the post office selection
+type Results struct {
+	GraphObj  *Graph
+	Name      string
+	Results   map[string]int
+	Laplacian mat.Mutable
 }
