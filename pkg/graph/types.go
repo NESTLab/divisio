@@ -28,7 +28,7 @@ type Edge struct {
 type Graph struct {
 	Nodes []*Node           `json:"nodes"`
 	Edges map[string][]Edge `json:"edges"`
-	lock  sync.RWMutex
+	Lock  sync.RWMutex
 }
 
 //Location stores x and y coordinates in a separate
@@ -40,7 +40,7 @@ type Location struct {
 //Results holds a graph ref, its name, and the eventual results from the post office selection
 type Results struct {
 	GraphObj  *Graph
-	Name      string
-	Results   map[string]int
-	Laplacian mat.Mutable
+	Name      string         `json:"name"`
+	Results   map[string]int `json:"results"`
+	Laplacian mat.Mutable    `json:"laplacian"`
 }
