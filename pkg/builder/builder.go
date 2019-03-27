@@ -34,6 +34,11 @@ func (c Config) GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 						EdgeExists = true
 					}
 				}
+				for _, nameEdge := range g.GetEdges(name) {
+					if nameEdge.ToNode == whichNodeName {
+						EdgeExists = true
+					}
+				}
 				if whichNodeName != name && !EdgeExists {
 					edgeWeight := randObj.Intn(c.ExtraEdgeWeight) + c.BaseEdgeWeight
 					g.AddEdge(g.GetNode(whichNodeName), g.GetNode(name), edgeWeight)
@@ -47,7 +52,7 @@ func (c Config) GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	numEdges := randObj.Intn(c.ExtraNumEdges) + c.BaseNumEdges - numNodes
 
 	for ii := 0; ii < numEdges; ii++ {
-		randWeight := randObj.Intn(c.BaseEdgeWeight) + c.ExtraEdgeWeight
+		randWeight := randObj.Intn(c.ExtraEdgeWeight) + c.BaseEdgeWeight
 		c.AddEdgeRand(&g, randObj, randWeight)
 	}
 
@@ -82,8 +87,13 @@ func (c Config) AddEdgeRand(g *graph.Graph, randObj *rand.Rand, weight int) {
 			}
 			n2 = g.Nodes[indexInner]
 			var EdgeExists bool
-			for _, whichNodeEdge := range g.Edges[n1.Name] {
-				if whichNodeEdge.ToNode == n2.Name {
+			for _, n1Edge := range g.Edges[n1.Name] {
+				if n1Edge.ToNode == n2.Name {
+					EdgeExists = true
+				}
+			}
+			for _, n2Edge := range g.Edges[n2.Name] {
+				if n2Edge.ToNode == n1.Name {
 					EdgeExists = true
 				}
 			}
