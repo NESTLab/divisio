@@ -11,20 +11,14 @@ import (
 )
 
 //GraphBuilderRand takes in an instance of rand.Rand and returns a reference to a graph.
-//The random quantities and their ranges are as follows:
-//numNodes: 10 - 14
-//Chance the node is a Task: 0.3
-//number of edges 2-4x number of nodes
-//edge weight: 50-100
 func (c Config) GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	var g graph.Graph
 
-	numNodes := randObj.Intn(c.BaseNumNodes) + c.ExtraNumNodes
+	numNodes := randObj.Intn(c.ExtraNumNodes) + c.BaseNumNodes
 
 	for ii := 0; ii < numNodes; ii++ {
 		name := fmt.Sprintf("%d", ii)
 
-		//30% chance of being a task. ~2-5 task nodes per graph
 		if randObj.Float64() < c.ChanceCrossRoads {
 			c.AddNodeRand(&g, randObj, name, true)
 		} else {
@@ -41,7 +35,7 @@ func (c Config) GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 					}
 				}
 				if whichNodeName != name && !EdgeExists {
-					edgeWeight := randObj.Intn(c.BaseEdgeWeight) + c.ExtraEdgeWeight
+					edgeWeight := randObj.Intn(c.ExtraEdgeWeight) + c.BaseEdgeWeight
 					g.AddEdge(g.GetNode(whichNodeName), g.GetNode(name), edgeWeight)
 					break
 				}
@@ -50,7 +44,7 @@ func (c Config) GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 
 	}
 
-	numEdges := randObj.Intn(c.BaseNumEdges) + c.ExtraNumEdges - numNodes
+	numEdges := randObj.Intn(c.ExtraNumEdges) + c.BaseNumEdges - numNodes
 
 	for ii := 0; ii < numEdges; ii++ {
 		randWeight := randObj.Intn(c.BaseEdgeWeight) + c.ExtraEdgeWeight
@@ -125,8 +119,8 @@ func (c Config) AddNodeRand(g *graph.Graph, randObj *rand.Rand, name string, isC
 		difficulty = 0
 		rate = 0
 	} else {
-		difficulty = randObj.Intn(c.BaseNodeDiff) + c.ExtraNodeDiff
-		rate = randObj.Intn(c.BaseNodeRate) + c.ExtraNodeRate
+		difficulty = randObj.Intn(c.ExtraNodeDiff) + c.BaseNodeDiff
+		rate = randObj.Intn(c.ExtraNodeRate) + c.BaseNodeRate
 	}
 
 	x := randObj.Intn(100)
