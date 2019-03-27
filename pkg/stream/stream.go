@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strconv"
 )
 
 func GraphOut(graphs map[string]*graph.Graph, directoryName string) error {
@@ -55,8 +56,50 @@ func ResultOut(results map[string]*graph.Results, directoryName string) error {
 	return nil
 }
 
+func VizOut(results map[string]*graph.Results, directoryName string) error {
+	for graphName, gr := range results {
+		output := "graph G {\n\toverlap=\"scale\"\n"
+		for _, node := range gr.GraphObj.Nodes {
+			if node.Rate > 0 {
+				output += fmt.Sprintf("\t\"%s\" [shape=\"box\" label=\"%s\\nR=%d\\nD=%d\\nF=%d\"];\n", node.Name, node.Name, node.Rate, node.Difficulty, results[graphName].Results[node.Name])
+			} else {
+				output += fmt.Sprintf("\t\"%s\" [shape=\"circle\" label=\"%s\\nF=%d\"];\n", node.Name, node.Name, results[graphName].Results[node.Name])
+			}
+
+		}
+		for originNode, edges := range gr.GraphObj.Edges {
+			for _, edge := range edges {
+				fromNum, err := strconv.Atoi(originNode)
+				if err != nil {
+					return err
+				}
+				toNum, err := strconv.Atoi(edge.ToNode)
+				if err != nil {
+					return err
+				}
+				if fromNum < toNum {
+					output += fmt.Sprintf("\t\"%s\" -- \"%s\" [label=\"%d\"];\n", originNode, edge.ToNode, edge.Weight)
+				}
+			}
+		}
+		output += "\n}"
+		//Build the graph name. Each graph is in its own separate folder to group all relevant files together
+		graphName := fmt.Sprintf("%s/graph_%s/visual.gv", directoryName, graphName)
+
+		//Create the file
+		fw, err := os.Create(graphName)
+		if err != nil {
+			return err
+		}
+		//Write the json to the file, then close the file
+		fw.Write([]byte(output))
+		fw.Close()
+	}
+	return nil
+}
+
 func GraphIn(pathToGraphs string) (map[string]*graph.Graph, error) {
-	graphJSONCheck := regexp.MustCompile(`[\w]+.json`)
+	graphJSONCheck := regexp.MustCompile(`graph.json`)
 	graphNumCheck := regexp.MustCompile(`graph_([\d]+)`)
 	graphs := make(map[string]*graph.Graph)
 	runFiles, err := ioutil.ReadDir(pathToGraphs)

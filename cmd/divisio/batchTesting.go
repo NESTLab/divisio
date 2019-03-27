@@ -11,6 +11,7 @@ import (
 var pathToTestBatch = flag.String("testPath", "",
 	"The path to the specific graph group containing the jsons for the graphs to test")
 var testMode = flag.Int("mode", 0, "The search mode to run. See search/types")
+var generateViz = flag.Bool("viz", false, "Whether to generate visualization files as well")
 
 func main() {
 	flag.Parse()
@@ -56,5 +57,12 @@ func main() {
 	err = stream.ResultOut(results, *pathToTestBatch)
 	if err != nil {
 		log.Fatalln(err)
+	}
+
+	if *generateViz {
+		err = stream.VizOut(results, *pathToTestBatch)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 }
