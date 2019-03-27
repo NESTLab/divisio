@@ -63,7 +63,7 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 	return passes
 }
 
-func CalculateLaplacian(g graph.Graph) *mat.Dense {
+func calculateLaplacian(g graph.Graph) (mat.CDense, []complex128) {
 	matSize := len(g.Nodes)
 	lapData := make([]float64, 0)
 	//Go through each row, as NewDense takes a row-major slice
@@ -85,7 +85,20 @@ func CalculateLaplacian(g graph.Graph) *mat.Dense {
 		lapData = append(lapData, rowData...)
 	}
 
-	return mat.NewDense(matSize, matSize, lapData)
+	lap := mat.NewDense(matSize, matSize, lapData)
+	var eigen mat.Eigen
+	ok := eigen.Factorize(lap, false, true)
+	if !ok {
+		log.Fatalln("Eigendecomposition failed")
+	}
+
+	var vects *mat.CDense
+	vects = eigen.VectorsTo(nil)
+
+	var vals []complex128
+	vals = eigen.Values(nil)
+
+	return *vects, vals
 }
 
 //contains is just a simple check to see if a node is within a slice of nodes already
@@ -102,7 +115,7 @@ func POSRoutine(graphs <-chan *graph.Results, result chan<- *graph.Results, mode
 	for g := range graphs {
 
 		g.Results = PostOfficeSelection(*g.GraphObj, mode)
-		g.Laplacian = CalculateLaplacian(*g.GraphObj)
+		//g.Vect, g.Val = calculateLaplacian(*g.GraphObj)
 
 		result <- g
 	}

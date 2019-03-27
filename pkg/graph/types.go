@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"gonum.org/v1/gonum/mat"
 	"sync"
 )
 
@@ -39,8 +38,9 @@ type Location struct {
 
 //Results holds a graph ref, its name, and the eventual results from the post office selection
 type Results struct {
-	GraphObj  *Graph
-	Name      string         `json:"name"`
-	Results   map[string]int `json:"results"`
-	Laplacian mat.Mutable    `json:"laplacian"`
+	GraphObj *Graph
+	Name     string         `json:"name"`
+	Results  map[string]int `json:"results"`
+	//Vect     mat.CDense     `json:"vect"`
+	//Val      []complex128
 }
