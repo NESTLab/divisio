@@ -18,7 +18,7 @@ func BetweennessSearch(g graph.Graph, root string) map[string]int {
 
 	//Start from the 'bottom' and work towards the start node
 	for numDepth, level := range nodeHierarchy {
-		//Go through each node in that level
+		//Go through each node in that level, ignore the last level
 		if numDepth != len(nodeHierarchy)-1 {
 			for _, nodeName := range level {
 
@@ -29,29 +29,22 @@ func BetweennessSearch(g graph.Graph, root string) map[string]int {
 				//Add the node's rate to it's flow value. Tasks will add a positive rate, crossroads will add zero
 				thisNodeFlow += node.Rate
 
+				//Calculate the total cost to the root from the starting node
 				totalCostToRoot := calcTotalCostToRoot(g, nodeHierarchy, root, nodeName)
 
-				validNodes := make([]string, 0, 0)
-
+				//Iterate through the edges of the current node, confirm their valid nodes
+				//Then calculate the cost from them to root, and add their edge weight. This is their individual cost to the root
+				//Compare that to the total cost to find the ratio of flow they will receive. Increment their value by that much
 				for _, edge := range g.GetEdges(nodeName) {
 					if levelContains(nodeHierarchy[numDepth+1], edge.ToNode) {
-						validNodes = append(validNodes, edge.ToNode)
-					}
-				}
-
-				if len(validNodes) == 1 {
-					nodeFlow[validNodes[0]] = thisNodeFlow
-				} else {
-					for _, node := range validNodes {
-						routeCost := calcTotalCostToRoot(g, nodeHierarchy, root, node)
+						routeCost := calcTotalCostToRoot(g, nodeHierarchy, root, edge.ToNode) + float64(edge.Weight)
 						percentFlow := 1.0 - (routeCost / totalCostToRoot)
-						nodeFlow[node] += int(percentFlow * float64(thisNodeFlow))
+						nodeFlow[edge.ToNode] += int(percentFlow * float64(thisNodeFlow))
 					}
 				}
 			}
 		}
 	}
-
 	return nodeFlow
 }
 
