@@ -26,7 +26,7 @@ func main() {
 
 	streamGraphs, err := stream.GraphIn(*pathToTestBatch)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	graphs = streamGraphs
 
@@ -56,13 +56,13 @@ func main() {
 
 	err = stream.ResultOut(results, *pathToTestBatch)
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	if *generateViz {
 		err = stream.VizOut(results, *pathToTestBatch)
 		if err != nil {
-			log.Fatalln(err)
+			panic(err)
 		}
 	}
 }
