@@ -16,9 +16,6 @@ func BetweennessSearch(g graph.Graph, root string) map[string]int {
 		nodeHierarchy[i], nodeHierarchy[opp] = nodeHierarchy[opp], nodeHierarchy[i]
 	}
 
-	//Stores the nodes that have already been processed, to avoid duplication and to select edge weights correctly
-	processed := make([]string, 0)
-
 	//Start from the 'bottom' and work towards the start node
 	for numDepth, level := range nodeHierarchy {
 		//Go through each node in that level
@@ -51,8 +48,6 @@ func BetweennessSearch(g graph.Graph, root string) map[string]int {
 						nodeFlow[node] += int(percentFlow * float64(thisNodeFlow))
 					}
 				}
-
-				processed = append(processed, nodeName)
 			}
 		}
 	}
