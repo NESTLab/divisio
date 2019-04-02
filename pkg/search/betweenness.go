@@ -4,10 +4,11 @@ import (
 	"github.com/NESTLab/divisio.git/pkg/graph"
 )
 
-func BetweennessSearch(g graph.Graph, start string) map[string]int {
+//BetweennessSearch takes in a graph, and a root node, and finds the information flow from all the other [task] nodes to it
+func BetweennessSearch(g graph.Graph, root string) map[string]int {
 	nodeFlow := make(map[string]int)
 	//Get the hierarchy for the nodes. From the start node at i=0, the slice at i=1 has the nodes 1 jump away, i=2 has two jumps away, etc
-	nodeHierarchy := getNodeHierarchy(g, start)
+	nodeHierarchy := getNodeHierarchy(g, root)
 
 	//Reverse the hierarchy so all the furthest nodes are at the top and we can iterate correctly
 	for i := len(nodeHierarchy)/2 - 1; i >= 0; i-- {
@@ -58,11 +59,11 @@ func BetweennessSearch(g graph.Graph, start string) map[string]int {
 	return nodeFlow
 }
 
-func getNodeHierarchy(g graph.Graph, start string) [][]string {
+func getNodeHierarchy(g graph.Graph, root string) [][]string {
 	nodeHierarchy := make([][]string, 0)
 
 	level0 := make([]string, 0)
-	level0 = append(level0, start)
+	level0 = append(level0, root)
 	nodeHierarchy = append(nodeHierarchy, level0)
 
 	for ll := 0; ll < len(g.Nodes); ll++ {
@@ -98,4 +99,36 @@ func levelContains(level []string, nodeToCheck string) bool {
 		}
 	}
 	return false
+}
+
+func calcTotalCostToRoot(g graph.Graph, hierarchy [][]string, root string, start string) float64 {
+	if root == start {
+		return 0
+	}
+	var startDepth int
+	for depth, level := range hierarchy {
+		for _, node := range level {
+			if node == start {
+				startDepth = depth
+			}
+		}
+	}
+
+	connections := make([]string, 0, 0)
+
+	for ii := 0; ii < len(hierarchy[startDepth-1]); ii++ {
+		tmpEdge := g.GetEdge(start, hierarchy[startDepth-1][ii])
+		if tmpEdge.ToNode != "" {
+			connections = append(connections, hierarchy[startDepth-1][ii])
+		}
+
+	}
+
+	var totalCost float64
+
+	for _, node := range connections {
+		totalCost += float64(g.GetEdge(start, node).Weight) + calcTotalCostToRoot(g, hierarchy, root, node)
+	}
+	totalCost = totalCost / float64(len(connections))
+	return totalCost
 }
