@@ -1,11 +1,13 @@
 package stream
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/NESTLab/divisio.git/pkg/graph"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"regexp"
 	"strconv"
 )
@@ -84,16 +86,27 @@ func VizOut(results map[string]*graph.Results, directoryName string) error {
 		}
 		output += "\n}"
 		//Build the graph name. Each graph is in its own separate folder to group all relevant files together
-		graphName := fmt.Sprintf("%s/graph_%s/visual.gv", directoryName, graphName)
+		graphPath := fmt.Sprintf("%s/graph_%s/visual.gv", directoryName, graphName)
+		visualName := fmt.Sprintf("%s/graph_%s/image.png", directoryName, graphName)
 
 		//Create the file
-		fw, err := os.Create(graphName)
+		fw, err := os.Create(graphPath)
 		if err != nil {
 			return err
 		}
 		//Write the json to the file, then close the file
 		fw.Write([]byte(output))
 		fw.Close()
+
+		cmd := exec.Command("neato", "-Tpng", graphPath, "-o", visualName)
+		var out bytes.Buffer
+		cmd.Stderr = &out
+		err = cmd.Run()
+		if err != nil {
+			fmt.Printf("%q\n", out.String())
+			return err
+		}
+
 	}
 	return nil
 }
