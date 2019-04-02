@@ -17,7 +17,7 @@ func (c Config) GraphBuilderRand(randObj *rand.Rand) *graph.Graph {
 	numNodes := randObj.Intn(c.ExtraNumNodes) + c.BaseNumNodes
 
 	for ii := 0; ii < numNodes; ii++ {
-		name := fmt.Sprintf("%d", ii)
+		name := string(ii)
 
 		if randObj.Float64() < c.ChanceCrossRoads {
 			c.AddNodeRand(&g, randObj, name, true)
