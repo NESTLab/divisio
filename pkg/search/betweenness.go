@@ -20,39 +20,40 @@ func BetweennessSearch(g graph.Graph, root string) map[string]int {
 	processed := make([]string, 0)
 
 	//Start from the 'bottom' and work towards the start node
-	for _, level := range nodeHierarchy {
+	for numDepth, level := range nodeHierarchy {
 		//Go through each node in that level
-		for _, nodeName := range level {
+		if numDepth != len(nodeHierarchy)-1 {
+			for _, nodeName := range level {
 
-			//Get the node object itself via it's name
-			node := g.GetNode(nodeName)
-			thisNodeFlow := nodeFlow[nodeName]
+				//Get the node object itself via it's name
+				node := g.GetNode(nodeName)
+				thisNodeFlow := nodeFlow[nodeName]
 
-			//Add the node's rate to it's flow value. Tasks will add a positive rate, crossroads will add zero
-			thisNodeFlow += node.Rate
+				//Add the node's rate to it's flow value. Tasks will add a positive rate, crossroads will add zero
+				thisNodeFlow += node.Rate
 
-			//Stores the sum of the outward edges (outward determined by if the toNode has already been processed) so we
-			//can use the edge weights to determine the split
-			var unexploredEdgeCostSum float64
+				totalCostToRoot := calcTotalCostToRoot(g, nodeHierarchy, root, nodeName)
 
-			//Get the list of nodes to iterate over
-			nodeEdges := g.GetEdges(nodeName)
-			for _, edge := range nodeEdges {
-				//We only care about the weights to the nodes we haven't visited yet
-				if !levelContains(processed, edge.ToNode) && !levelContains(level, edge.ToNode) {
-					unexploredEdgeCostSum += float64(edge.Weight)
+				validNodes := make([]string, 0, 0)
+
+				for _, edge := range g.GetEdges(nodeName) {
+					if levelContains(nodeHierarchy[numDepth+1], edge.ToNode) {
+						validNodes = append(validNodes, edge.ToNode)
+					}
 				}
-			}
 
-			//Now we iterate over it again, updating the toNodes nodeFlow values with how much this spreads
-			for _, edge := range nodeEdges {
-				if !levelContains(processed, edge.ToNode) && !levelContains(level, edge.ToNode) {
-					percentFlow := float64(1.0 - (float64(edge.Weight) / unexploredEdgeCostSum))
-					nodeFlow[edge.ToNode] += int(percentFlow * float64(thisNodeFlow))
+				if len(validNodes) == 1 {
+					nodeFlow[validNodes[0]] = thisNodeFlow
+				} else {
+					for _, node := range validNodes {
+						routeCost := calcTotalCostToRoot(g, nodeHierarchy, root, node)
+						percentFlow := 1.0 - (routeCost / totalCostToRoot)
+						nodeFlow[node] += int(percentFlow * float64(thisNodeFlow))
+					}
 				}
-			}
 
-			processed = append(processed, nodeName)
+				processed = append(processed, nodeName)
+			}
 		}
 	}
 
@@ -77,7 +78,13 @@ func getNodeHierarchy(g graph.Graph, root string) [][]string {
 			}
 		}
 	}
-	shrunkNodeHierarchy := append(make([][]string, 0, 0), nodeHierarchy...)
+	shrunkNodeHierarchy := make([][]string, 0, 0)
+	for _, level := range nodeHierarchy {
+		if len(level) > 0 {
+			shrunkNodeHierarchy = append(shrunkNodeHierarchy, level)
+		}
+
+	}
 	return shrunkNodeHierarchy
 }
 
@@ -116,10 +123,10 @@ func calcTotalCostToRoot(g graph.Graph, hierarchy [][]string, root string, start
 
 	connections := make([]string, 0, 0)
 
-	for ii := 0; ii < len(hierarchy[startDepth-1]); ii++ {
-		tmpEdge := g.GetEdge(start, hierarchy[startDepth-1][ii])
+	for ii := 0; ii < len(hierarchy[startDepth+1]); ii++ {
+		tmpEdge := g.GetEdge(start, hierarchy[startDepth+1][ii])
 		if tmpEdge.ToNode != "" {
-			connections = append(connections, hierarchy[startDepth-1][ii])
+			connections = append(connections, hierarchy[startDepth+1][ii])
 		}
 
 	}
