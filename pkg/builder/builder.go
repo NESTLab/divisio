@@ -71,6 +71,7 @@ func (c Config) AddEdgeRand(g *graph.Graph, randObj *rand.Rand, weight int) {
 		g.Edges = make(map[string][]graph.Edge)
 	}
 	var n1, n2 *graph.Node
+	var foundValid bool
 
 	startIndexOuter := randObj.Intn(len(g.Nodes))
 	for jj := 0; jj < len(g.Nodes); jj++ {
@@ -98,20 +99,23 @@ func (c Config) AddEdgeRand(g *graph.Graph, randObj *rand.Rand, weight int) {
 				}
 			}
 			if n1.Name != n2.Name && !EdgeExists {
+				foundValid = true
 				break
 			}
 		}
 
 	}
-	g.Edges[n1.Name] = append(g.Edges[n1.Name], graph.Edge{
-		ToNode: n2.Name,
-		Weight: weight,
-	})
+	if foundValid {
+		g.Edges[n1.Name] = append(g.Edges[n1.Name], graph.Edge{
+			ToNode: n2.Name,
+			Weight: weight,
+		})
 
-	g.Edges[n2.Name] = append(g.Edges[n2.Name], graph.Edge{
-		ToNode: n1.Name,
-		Weight: weight,
-	})
+		g.Edges[n2.Name] = append(g.Edges[n2.Name], graph.Edge{
+			ToNode: n1.Name,
+			Weight: weight,
+		})
+	}
 
 }
 
