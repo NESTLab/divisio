@@ -24,23 +24,36 @@ func BetweennessSearch(g graph.Graph, root string) map[string]int {
 
 				//Get the node object itself via it's name
 				node := g.GetNode(nodeName)
-				thisNodeFlow := nodeFlow[nodeName]
-
 				//Add the node's rate to it's flow value. Tasks will add a positive rate, crossroads will add zero
-				thisNodeFlow += node.Rate
+				thisNodeFlow := nodeFlow[nodeName] + node.Rate
+
+				//Add the current nodes flow to it's own count. For crossroads this will do nothing, for tasks this will
+				//avoid a bug where they don't include their own contribution to the flow
+				nodeFlow[nodeName] += node.Rate
 
 				//Calculate the total cost to the root from the starting node
 				totalCostToRoot := calcTotalCostToRoot(g, nodeHierarchy, root, nodeName)
 
+				validEdges := make([]graph.Edge, 0, 0)
+
+				for _, edge := range g.GetEdges(nodeName) {
+					if levelContains(nodeHierarchy[numDepth+1], edge.ToNode) {
+						validEdges = append(validEdges, edge)
+					}
+				}
+
 				//Iterate through the edges of the current node, confirm their valid nodes
 				//Then calculate the cost from them to root, and add their edge weight. This is their individual cost to the root
 				//Compare that to the total cost to find the ratio of flow they will receive. Increment their value by that much
-				for _, edge := range g.GetEdges(nodeName) {
-					if levelContains(nodeHierarchy[numDepth+1], edge.ToNode) {
-						routeCost := calcTotalCostToRoot(g, nodeHierarchy, root, edge.ToNode) + float64(edge.Weight)
-						percentFlow := 1.0 - (routeCost / totalCostToRoot)
-						nodeFlow[edge.ToNode] += int(percentFlow * float64(thisNodeFlow))
+				for _, edge := range validEdges {
+					var percentFlow float64
+					if len(validEdges) == 1 {
+						percentFlow = 1.0
+					} else {
+						routeCost := (calcTotalCostToRoot(g, nodeHierarchy, root, edge.ToNode) + float64(edge.Weight)) / float64(len(validEdges))
+						percentFlow = 1.0 - (routeCost / totalCostToRoot)
 					}
+					nodeFlow[edge.ToNode] += int(percentFlow * float64(thisNodeFlow))
 				}
 			}
 		}
