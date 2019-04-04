@@ -12,5 +12,5 @@ func MakeNode(name string, difficulty int, rate int, x, y int) *Node {
 
 //
 func (n Node) IsTask() bool {
-	return n.Difficulty > 0
+	return n.Rate > 0
 }

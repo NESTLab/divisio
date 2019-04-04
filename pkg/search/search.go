@@ -19,7 +19,7 @@ func PostOfficeSelection(g graph.Graph, mode int) map[string]int {
 	passes := make(map[string]int)
 
 	//Get a list with only the task nodes in it
-	taskNodes := make([]string, 1)
+	taskNodes := make([]string, 0, 0)
 	for _, node := range g.Nodes {
 		if node.IsTask() {
 			taskNodes = append(taskNodes, node.Name)
